@@ -29,6 +29,14 @@ def get_db():
     return conn
 
 
+def get_admin_senha():
+    """Busca a senha do administrador no banco de dados."""
+    db = get_db()
+    row = db.execute("SELECT valor FROM configuracoes WHERE chave = 'senha_admin'").fetchone()
+    db.close()
+    return row['valor'] if row else 'admin2026'
+
+
 # ==================== ROTAS PRINCIPAIS ====================
 
 @app.route('/')
@@ -223,6 +231,150 @@ def logout_professor():
     return redirect(url_for('index'))
 
 
+# ==================== ADMINISTRAÇÃO ====================
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def login_admin():
+    """Login do administrador (coordenação/direção)."""
+    if session.get('admin_logado'):
+        return redirect(url_for('admin'))
+    
+    if request.method == 'POST':
+        senha = request.form.get('senha_admin', '')
+        if senha == get_admin_senha():
+            session['admin_logado'] = True
+            return redirect(url_for('admin'))
+        else:
+            flash('Senha incorreta. Acesso negado.', 'error')
+    
+    return render_template('login_admin.html')
+
+
+@app.route('/admin/logout')
+def logout_admin():
+    """Encerra a sessão do administrador."""
+    session.pop('admin_logado', None)
+    flash('Sessão de administrador encerrada.', 'info')
+    return redirect(url_for('index'))
+
+
+@app.route('/admin/alterar-senha', methods=['POST'])
+def alterar_senha_admin():
+    """Permite ao administrador trocar sua senha pela tela."""
+    if not session.get('admin_logado'):
+        return redirect(url_for('login_admin'))
+    
+    senha_atual = request.form.get('senha_atual', '')
+    senha_nova = request.form.get('senha_nova', '')
+    senha_confirmar = request.form.get('senha_confirmar', '')
+    
+    if senha_atual != get_admin_senha():
+        flash('A senha atual está incorreta.', 'error')
+    elif len(senha_nova) < 4:
+        flash('A nova senha deve ter pelo menos 4 caracteres.', 'error')
+    elif senha_nova != senha_confirmar:
+        flash('A nova senha e a confirmação não coincidem.', 'error')
+    else:
+        db = get_db()
+        db.execute("UPDATE configuracoes SET valor = ? WHERE chave = 'senha_admin'", (senha_nova,))
+        db.commit()
+        db.close()
+        flash('Senha de administrador alterada com sucesso!', 'success')
+    
+    return redirect(url_for('admin'))
+
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    """Painel de administração para gerenciar professores e disciplinas."""
+    # Proteção: exige login do administrador
+    if not session.get('admin_logado'):
+        flash('Faça login como administrador para acessar esta área.', 'error')
+        return redirect(url_for('login_admin'))
+    db = get_db()
+
+    if request.method == 'POST':
+        nome = request.form.get('nome', '').strip()
+        codigo = request.form.get('codigo_acesso', '').strip()
+        disciplinas_selecionadas = request.form.getlist('disciplinas')
+
+        if nome and codigo and disciplinas_selecionadas:
+            try:
+                cursor = db.cursor()
+                cursor.execute('INSERT INTO professores (nome, codigo_acesso) VALUES (?, ?)', (nome, codigo))
+                professor_id = cursor.lastrowid
+                
+                # Vincular o professor às disciplinas marcadas no checkbox
+                for disc_id in disciplinas_selecionadas:
+                    cursor.execute('INSERT INTO professor_disciplina (professor_id, disciplina_id) VALUES (?, ?)', (professor_id, int(disc_id)))
+                
+                db.commit()
+                flash(f'Professor(a) {nome} cadastrado(a) com sucesso!', 'success')
+            except sqlite3.IntegrityError:
+                flash('Erro: Já existe um professor com este código de acesso.', 'error')
+        else:
+            flash('Preencha o nome, código e selecione pelo menos uma disciplina.', 'error')
+        
+        db.close()
+        return redirect(url_for('admin'))
+
+    # GET - Buscar disciplinas
+    todas_disciplinas = db.execute('SELECT id, nome FROM disciplinas ORDER BY nome').fetchall()
+
+    # GET - Buscar professores e juntar as disciplinas em um texto
+    professores_rows = db.execute('''
+        SELECT p.id, p.nome, p.codigo_acesso, GROUP_CONCAT(d.nome, ', ') as disciplinas
+        FROM professores p
+        LEFT JOIN professor_disciplina pd ON p.id = pd.professor_id
+        LEFT JOIN disciplinas d ON pd.disciplina_id = d.id
+        GROUP BY p.id
+        ORDER BY p.nome
+    ''').fetchall()
+    
+    db.close()
+    return render_template('admin.html', professores=professores_rows, disciplinas=todas_disciplinas)
+
+@app.route('/admin/disciplina', methods=['POST'])
+def adicionar_disciplina():
+    """Cadastra uma nova disciplina no sistema."""
+    if not session.get('admin_logado'):
+        return redirect(url_for('login_admin'))
+    nome = request.form.get('nome', '').strip()
+    if nome:
+        db = get_db()
+        db.execute('INSERT INTO disciplinas (nome) VALUES (?)', (nome,))
+        db.commit()
+        db.close()
+        flash(f'Disciplina "{nome}" adicionada com sucesso!', 'success')
+    else:
+        flash('O nome da disciplina não pode ficar em branco.', 'error')
+    return redirect(url_for('admin'))
+
+
+@app.route('/admin/excluir/<int:id>', methods=['POST'])
+def excluir_professor(id):
+    """Exclui um professor e todas as suas dependências do sistema."""
+    if not session.get('admin_logado'):
+        return redirect(url_for('login_admin'))
+    db = get_db()
+    cursor = db.cursor()
+    
+    # 1. Apagar as avaliações feitas para este professor
+    cursor.execute('DELETE FROM avaliacoes WHERE professor_id = ?', (id,))
+    
+    # 2. Apagar o vínculo deste professor com as disciplinas
+    cursor.execute('DELETE FROM professor_disciplina WHERE professor_id = ?', (id,))
+    
+    # 3. Finalmente, apagar o professor
+    cursor.execute('DELETE FROM professores WHERE id = ?', (id,))
+    
+    db.commit()
+    db.close()
+    
+    flash('Professor excluído com sucesso!', 'success')
+    return redirect(url_for('admin'))
+
+
 # ==================== INICIALIZAÇÃO ====================
 
 if __name__ == '__main__':
@@ -232,4 +384,4 @@ if __name__ == '__main__':
     else:
         print('Servidor iniciando...')
         print('Acesse: http://127.0.0.1:5000')
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

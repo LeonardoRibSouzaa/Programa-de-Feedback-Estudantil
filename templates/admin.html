@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Administração do Sistema{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>🔐 Painel da Coordenação / Administração</h2>
+    <p>Gerencie os professores e as disciplinas do sistema.
+       &mdash; <a href="{{ url_for('logout_admin') }}" style="color: #c0392b;">Sair da Administração</a>
+    </p>
+</div>
+
+<!-- ======================= SEÇÃO PROFESSORES ======================= -->
+<div style="display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 3rem;">
+    <!-- Formulário de Cadastro Professor -->
+    <div class="form-container" style="flex: 1; min-width: 300px; margin: 0;">
+        <h3 style="color: #1a5276; margin-bottom: 1rem;">Cadastrar Novo Professor</h3>
+        <form method="POST" action="{{ url_for('admin') }}">
+            <div class="form-group">
+                <label for="nome">Nome do Professor</label>
+                <input type="text" name="nome" id="nome" placeholder="Ex: Prof. Marcos" required>
+            </div>
+
+            <div class="form-group">
+                <label for="codigo_acesso">Criar Código de Acesso (Senha)</label>
+                <input type="text" name="codigo_acesso" id="codigo_acesso" placeholder="Ex: marcos2026" required>
+            </div>
+
+            <div class="form-group">
+                <label>Disciplinas que leciona:</label>
+                <div style="max-height: 150px; overflow-y: auto; border: 1px solid #e0e0e0; padding: 10px; border-radius: 8px; background: #fafafa;">
+                    {% for disc in disciplinas %}
+                    <div style="margin-bottom: 5px;">
+                        <label style="font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <input type="checkbox" name="disciplinas" value="{{ disc.id }}" style="width: auto;"> {{ disc.nome }}
+                        </label>
+                    </div>
+                    {% else %}
+                    <p style="color: #888; font-size: 0.9rem;">Nenhuma disciplina cadastrada ainda. Cadastre abaixo primeiro.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Salvar Professor</button>
+        </form>
+    </div>
+
+    <!-- Lista de Professores -->
+    <div class="comments-section" style="flex: 1.5; min-width: 300px;">
+        <h3>Professores Cadastrados no Sistema</h3>
+        <div style="margin-top: 1rem;">
+            {% for prof in professores %}
+            <div style="padding: 0.8rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>{{ prof.nome }}</strong><br>
+                    <span style="color: #888; font-size: 0.85rem;">
+                        Código: <span class="senha-oculta" id="senha-{{ prof.id }}">••••••</span>
+                        <span class="senha-real" id="real-{{ prof.id }}" style="display:none;">{{ prof.codigo_acesso }}</span>
+                        <button onclick="var real=document.getElementById('real-{{ prof.id }}'); var oculta=document.getElementById('senha-{{ prof.id }}'); if(real.style.display==='none'){real.style.display='inline';oculta.style.display='none';this.textContent='🙈 Ocultar';}else{real.style.display='none';oculta.style.display='inline';this.textContent='👁 Revelar';}" style="background:none;border:1px solid #ccc;border-radius:4px;padding:1px 6px;cursor:pointer;font-size:0.75rem;margin-left:5px;">👁 Revelar</button>
+                        | Matérias: {{ prof.disciplinas or 'Nenhuma' }}
+                    </span>
+                </div>
+                <form method="POST" action="{{ url_for('excluir_professor', id=prof.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir o(a) {{ prof.nome }}? TODAS as avaliações recebidas por ele(a) também serão apagadas.');" style="margin: 0;">
+                    <button type="submit" style="background: #e74c3c; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: bold;">Excluir</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- ======================= SEÇÃO DISCIPLINAS ======================= -->
+<div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+    <!-- Formulário Cadastro Disciplina -->
+    <div class="form-container" style="flex: 1; min-width: 300px; margin: 0; background: #fdfbf7;">
+        <h3 style="color: #d35400; margin-bottom: 1rem;">Cadastrar Nova Disciplina</h3>
+        <form method="POST" action="{{ url_for('adicionar_disciplina') }}">
+            <div class="form-group">
+                <label for="nome_disciplina">Nome da Disciplina</label>
+                <input type="text" name="nome" id="nome_disciplina" placeholder="Ex: Biologia" required>
+            </div>
+            <button type="submit" class="btn btn-success btn-block" style="background-color: #d35400;">Adicionar Disciplina</button>
+        </form>
+    </div>
+
+    <!-- Lista de Disciplinas -->
+    <div class="comments-section" style="flex: 1.5; min-width: 300px; background: #fdfbf7;">
+        <h3 style="color: #d35400;">Disciplinas Cadastradas</h3>
+        <div style="margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 10px;">
+            {% for disc in disciplinas %}
+            <span style="background: white; color: #d35400; padding: 5px 12px; border-radius: 20px; font-size: 0.95rem; border: 1px solid #d35400; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                {{ disc.nome }}
+            </span>
+            {% else %}
+            <p style="color: #888;">Nenhuma disciplina encontrada.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- ======================= ALTERAR SENHA DO ADMINISTRADOR ======================= -->
+<div style="margin-top: 3rem;">
+    <div class="form-container" style="max-width: 450px; border-top: 4px solid #8e44ad;">
+        <h3 style="color: #8e44ad; margin-bottom: 1rem;">🔑 Alterar Senha de Administrador</h3>
+        <form method="POST" action="{{ url_for('alterar_senha_admin') }}">
+            <div class="form-group">
+                <label for="senha_atual">Senha Atual</label>
+                <input type="password" name="senha_atual" id="senha_atual" placeholder="Digite a senha atual" required>
+            </div>
+            <div class="form-group">
+                <label for="senha_nova">Nova Senha</label>
+                <input type="password" name="senha_nova" id="senha_nova" placeholder="Mínimo 4 caracteres" required>
+            </div>
+            <div class="form-group">
+                <label for="senha_confirmar">Confirmar Nova Senha</label>
+                <input type="password" name="senha_confirmar" id="senha_confirmar" placeholder="Repita a nova senha" required>
+            </div>
+            <button type="submit" class="btn btn-block" style="background-color: #8e44ad; color: white;">Alterar Senha</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

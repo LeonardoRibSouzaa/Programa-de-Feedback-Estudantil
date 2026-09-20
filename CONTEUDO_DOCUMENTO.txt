@@ -1,0 +1,58 @@
+================================================================================
+CONTEÚDO PARA PREENCHER O TRABALHO FINAL DA ATIVIDADE EXTENSIONISTA II
+================================================================================
+Instruções de formatação exigidas pelo modelo:
+- Fonte: Arial
+- Tamanho: 12
+- Cor: Preto e sem negrito
+- Alinhamento: Justificado
+================================================================================
+
+--------------------------------------------------------------------------------
+CAMPO: Etapa
+--------------------------------------------------------------------------------
+(   ) Validação da proposta
+( X ) Trabalho final
+
+
+--------------------------------------------------------------------------------
+CAMPO: Metodologia
+--------------------------------------------------------------------------------
+A metodologia utilizada no desenvolvimento do Programa de Feedback Estudantil seguiu uma abordagem estruturada em etapas sequenciais, desde o levantamento de requisitos até os testes finais e a aplicação prática na comunidade. A tecnologia principal utilizada foi a linguagem de programação Python, com o framework web Flask e o banco de dados SQLite. A interface com o usuário foi desenvolvida utilizando HTML5, CSS3 e JavaScript.
+
+O diagrama de rede a seguir apresenta a estrutura lógica e temporal do projeto:
+
+A figura apresenta um diagrama com "Início do Projeto" e "Fim do Projeto", etapas representadas por elipses. Entre essas elipses há oito atividades representadas por retângulos, contendo o nome da atividade e a duração. As atividades são interligadas por setas. O diagrama possui três possíveis caminhos, os quais são:
+
+1º Caminho - Início do Projeto, vai para a Atividade A (Levantamento de requisitos) com duração de 3 dias, vai para a Atividade B (Modelagem do banco de dados SQLite) com duração de 2 dias, vai para a Atividade D (Desenvolvimento do backend em Python/Flask) com duração de 5 dias, vai para a Atividade F (Testes e correções) com duração de 3 dias, vai para a Atividade G (Aplicação na comunidade local) com duração de 2 dias, vai para a Atividade H (Documentação final) com duração de 2 dias e chega ao Fim do Projeto.
+
+2º Caminho - Início do Projeto, vai para a Atividade A (Levantamento de requisitos) com duração de 3 dias, vai para a Atividade C (Design da interface) com duração de 3 dias, vai para a Atividade E (Desenvolvimento do frontend HTML/CSS/JS) com duração de 4 dias, vai para a Atividade F (Testes e correções) com duração de 3 dias, vai para a Atividade G (Aplicação na comunidade local) com duração de 2 dias, vai para a Atividade H (Documentação final) com duração de 2 dias e chega ao Fim do Projeto.
+
+3º Caminho - Início do Projeto, vai para a Atividade A (Levantamento de requisitos) com duração de 3 dias, vai para a Atividade B (Modelagem do banco de dados SQLite) com duração de 2 dias, vai para a Atividade D (Desenvolvimento do backend em Python/Flask) com duração de 5 dias, vai para a Atividade E (Desenvolvimento do frontend HTML/CSS/JS) com duração de 4 dias, vai para a Atividade F (Testes e correções) com duração de 3 dias, vai para a Atividade G (Aplicação na comunidade local) com duração de 2 dias, vai para a Atividade H (Documentação final) com duração de 2 dias e chega ao Fim do Projeto.
+
+
+--------------------------------------------------------------------------------
+CAMPO: Resultados Esperados/Obtidos
+--------------------------------------------------------------------------------
+O desenvolvimento do Programa de Feedback Estudantil alcançou resultados práticos expressivos na promoção do diálogo educacional. O sistema web foi plenamente implementado utilizando a linguagem de programação Python com o framework Flask e banco de dados SQLite. A aplicação permite que os estudantes avaliem o corpo docente de maneira totalmente anônima, atribuindo notas de 1 a 5 estrelas nos critérios de Didática, Pontualidade, Domínio do Conteúdo e Relacionamento com Alunos, além de fornecerem comentários textuais específicos para pontos positivos e aspectos a melhorar.
+
+Para os professores, foi disponibilizado um painel exclusivo acessado por código individual, no qual é possível visualizar relatórios em tempo real contendo a média geral, as médias segmentadas por critério, gráficos comparativos de desempenho e a relação de considerações deixadas pelos estudantes. Essa devolutiva estruturada oferece subsídios concretos para que os docentes aprimorem suas práticas pedagógicas.
+
+O projeto foi validado e aplicado no contexto de instituições de ensino no município de Vitória da Conquista - BA, consolidando um canal de comunicação respeitoso e objetivo entre discentes e docentes, colaborando diretamente com a meta do ODS 04 (Educação de Qualidade).
+
+Link do GitHub com o código do projeto: [INSERIR AQUI O LINK DO SEU REPOSITÓRIO GITHUB]
+Link do vídeo demonstrativo (máx. 5 minutos): [INSERIR AQUI O LINK DO SEU VÍDEO DO YOUTUBE/DRIVE]
+
+
+--------------------------------------------------------------------------------
+CAMPO: Considerações Finais
+--------------------------------------------------------------------------------
+O desenvolvimento da Atividade Extensionista proporcionou aprendizados técnicos e sociais fundamentais para nossa formação:
+
+1. Desenvolvimento prático de software de ponta a ponta: Aprendemos a conceber, estruturar e implementar uma aplicação web completa utilizando a linguagem Python, o microframework Flask e banco de dados relacional SQLite, integrando banco de dados, regras de negócio e interface responsiva para resolver um problema real.
+
+2. A tecnologia como propulsora da qualidade educacional: Compreendemos o papel da inclusão digital e dos sistemas computacionais na mediação pedagógica, constatando como um ambiente de avaliação anônimo e estruturado estimula o diálogo franco e construtivo, impactando positivamente a educação local.
+
+3. Gestão colaborativa e trabalho em equipe: Aprimoramos competências interpessoais ligadas à distribuição equilibrada de tarefas, versionamento conjunto de código e resolução colaborativa de problemas técnicos, alinhando prazos às metas extensionistas.
+
+4. Sensibilidade às demandas da comunidade: O contato com a realidade educacional de Vitória da Conquista reforçou a importância de planejar ferramentas de tecnologia centradas no usuário final, garantindo que o software seja simples, acessível e gere valor social palpável.

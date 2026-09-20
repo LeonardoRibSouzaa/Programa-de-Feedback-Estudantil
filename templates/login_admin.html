@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Login Administração{% endblock %}
+
+{% block content %}
+<div class="form-container" style="max-width: 450px;">
+    <h2>🔐 Área Restrita</h2>
+    <p class="subtitle">Acesso exclusivo para a coordenação ou direção da instituição.</p>
+
+    <form method="POST" action="{{ url_for('login_admin') }}">
+        <div class="form-group">
+            <label for="senha_admin">Senha do Administrador</label>
+            <input type="password" name="senha_admin" id="senha_admin"
+                   placeholder="Digite a senha de administrador" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="background-color: #8e44ad;">Entrar</button>
+    </form>
+
+    <div class="alert alert-info" style="margin-top: 1.5rem;">
+        🔑 <strong>Senha padrão:</strong> <code style="background: #ddd; padding: 2px 6px; border-radius: 4px;">admin2026</code><br>
+        ⚠️ É altamente recomendável alterar a senha padrão no primeiro acesso. Você poderá fazer isso dentro do painel de administração.
+    </div>
+</div>
+{% endblock %}

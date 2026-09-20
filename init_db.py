@@ -43,6 +43,11 @@ def criar_banco():
             FOREIGN KEY (professor_id) REFERENCES professores(id),
             FOREIGN KEY (disciplina_id) REFERENCES disciplinas(id)
         );
+
+        CREATE TABLE IF NOT EXISTS configuracoes (
+            chave TEXT PRIMARY KEY,
+            valor TEXT NOT NULL
+        );
     ''')
 
     conn.commit()
@@ -61,6 +66,13 @@ def popular_dados():
         print('Banco já possui dados. Pulando inserção.')
         conn.close()
         return
+
+    # Senha padrão do administrador (coordenação/direção)
+    cursor.execute(
+        'INSERT OR IGNORE INTO configuracoes (chave, valor) VALUES (?, ?)',
+        ('senha_admin', 'admin2026')
+    )
+    print('Senha padrão do administrador: admin2026')
 
     # Professores de exemplo
     professores = [
