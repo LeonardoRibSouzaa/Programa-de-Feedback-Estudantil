@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Avaliar Professor{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Avaliar Professor</h2>
+    <p class="subtitle">Sua avaliação é 100% anônima. Nenhuma informação pessoal será coletada.</p>
+
+    <form method="POST" action="{{ url_for('avaliar') }}" id="formAvaliar">
+        <div class="form-group">
+            <label for="professor">Professor(a)</label>
+            <select name="professor_id" id="professor" required>
+                <option value="">Selecione um professor...</option>
+                {% for prof in professores %}
+                    <option value="{{ prof.id }}">{{ prof.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="disciplina">Disciplina</label>
+            <select name="disciplina_id" id="disciplina" required>
+                <option value="">Selecione primeiro um professor...</option>
+            </select>
+        </div>
+
+        <div class="rating-section">
+            <h3>Avaliação por Critério</h3>
+
+            <div class="rating-item">
+                <label>Didática</label>
+                <div class="star-rating">
+                    {% for i in range(5, 0, -1) %}
+                    <input type="radio" name="didatica" id="did{{ i }}" value="{{ i }}" required>
+                    <label for="did{{ i }}">★</label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="rating-item">
+                <label>Pontualidade</label>
+                <div class="star-rating">
+                    {% for i in range(5, 0, -1) %}
+                    <input type="radio" name="pontualidade" id="pont{{ i }}" value="{{ i }}" required>
+                    <label for="pont{{ i }}">★</label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="rating-item">
+                <label>Domínio do Conteúdo</label>
+                <div class="star-rating">
+                    {% for i in range(5, 0, -1) %}
+                    <input type="radio" name="dominio_conteudo" id="dom{{ i }}" value="{{ i }}" required>
+                    <label for="dom{{ i }}">★</label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="rating-item">
+                <label>Relacionamento com Alunos</label>
+                <div class="star-rating">
+                    {% for i in range(5, 0, -1) %}
+                    <input type="radio" name="relacionamento" id="rel{{ i }}" value="{{ i }}" required>
+                    <label for="rel{{ i }}">★</label>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="pontos_positivos">Pontos Positivos</label>
+            <textarea name="pontos_positivos" id="pontos_positivos"
+                      placeholder="Destaque os pontos positivos do professor(a)..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="aspectos_melhorar">Aspectos a Melhorar</label>
+            <textarea name="aspectos_melhorar" id="aspectos_melhorar"
+                      placeholder="Sugira aspectos que poderiam ser melhorados..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Enviar Avaliação</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Dados das disciplinas por professor (gerado pelo servidor)
+    const disciplinasPorProfessor = {{ disciplinas_json|safe }};
+
+    document.getElementById('professor').addEventListener('change', function() {
+        const profId = this.value;
+        const selectDisc = document.getElementById('disciplina');
+        selectDisc.innerHTML = '<option value="">Selecione uma disciplina...</option>';
+
+        if (profId && disciplinasPorProfessor[profId]) {
+            disciplinasPorProfessor[profId].forEach(function(disc) {
+                const opt = document.createElement('option');
+                opt.value = disc.id;
+                opt.textContent = disc.nome;
+                selectDisc.appendChild(opt);
+            });
+        }
+    });
+</script>
+{% endblock %}

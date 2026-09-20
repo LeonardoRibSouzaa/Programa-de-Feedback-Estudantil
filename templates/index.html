@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Feedback Estudantil - Início{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h2>Programa de Feedback Estudantil</h2>
+    <p>Uma plataforma para promover a comunicação construtiva entre alunos e professores, contribuindo para uma educação de qualidade.</p>
+</div>
+
+<div class="cards">
+    <a href="{{ url_for('avaliar') }}" class="card card-aluno">
+        <div class="icon">🎓</div>
+        <h3>Sou Aluno</h3>
+        <p>Avalie seus professores de forma anônima, destacando pontos positivos e sugestões de melhoria.</p>
+    </a>
+
+    <a href="{{ url_for('login_professor') }}" class="card card-professor">
+        <div class="icon">👨‍🏫</div>
+        <h3>Sou Professor</h3>
+        <p>Acesse seu painel para visualizar os feedbacks recebidos e acompanhar sua evolução.</p>
+    </a>
+</div>
+
+<div style="text-align: center; margin-top: 3rem;">
+    <div class="alert alert-info" style="max-width: 600px; margin: 0 auto;">
+        🔒 Todas as avaliações são <strong>100% anônimas</strong>. Nenhuma informação pessoal do aluno é coletada.
+    </div>
+</div>
+{% endblock %}

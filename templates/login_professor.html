@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Área do Professor{% endblock %}
+
+{% block content %}
+<div class="form-container" style="max-width: 450px;">
+    <h2>Área do Professor</h2>
+    <p class="subtitle">Acesse seu painel para visualizar os feedbacks recebidos.</p>
+
+    <form method="POST" action="{{ url_for('login_professor') }}">
+        <div class="form-group">
+            <label for="codigo_acesso">Código de Acesso</label>
+            <input type="text" name="codigo_acesso" id="codigo_acesso"
+                   placeholder="Digite seu código de acesso" required>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-block">Acessar Painel</button>
+    </form>
+</div>
+{% endblock %}

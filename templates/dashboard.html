@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Painel - {{ professor.nome }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Painel de Feedbacks</h2>
+    <p>Bem-vindo(a), <strong>{{ professor.nome }}</strong>
+       &mdash; <a href="{{ url_for('logout_professor') }}" style="color: #c0392b;">Sair</a>
+    </p>
+</div>
+
+<!-- Estatísticas gerais -->
+<div class="stats-grid">
+    <div class="stat-card media-geral">
+        <div class="stat-value">{{ "%.1f"|format(medias.geral) if medias.geral else "—" }}</div>
+        <div class="stat-label">Média Geral</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ total_avaliacoes }}</div>
+        <div class="stat-label">Avaliações Recebidas</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ "%.1f"|format(medias.didatica) if medias.didatica else "—" }}</div>
+        <div class="stat-label">Didática</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ "%.1f"|format(medias.pontualidade) if medias.pontualidade else "—" }}</div>
+        <div class="stat-label">Pontualidade</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ "%.1f"|format(medias.dominio) if medias.dominio else "—" }}</div>
+        <div class="stat-label">Domínio do Conteúdo</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ "%.1f"|format(medias.relacionamento) if medias.relacionamento else "—" }}</div>
+        <div class="stat-label">Relacionamento</div>
+    </div>
+</div>
+
+<!-- Gráfico de barras -->
+{% if medias.geral %}
+<div class="bar-chart">
+    <h3>Desempenho por Critério</h3>
+
+    <div class="bar-item">
+        <div class="bar-label">
+            <span>Didática</span>
+            <span>{{ "%.1f"|format(medias.didatica) }}/5.0</span>
+        </div>
+        <div class="bar-track">
+            <div class="bar-fill" style="width: {{ (medias.didatica / 5 * 100)|round }}%"></div>
+        </div>
+    </div>
+
+    <div class="bar-item">
+        <div class="bar-label">
+            <span>Pontualidade</span>
+            <span>{{ "%.1f"|format(medias.pontualidade) }}/5.0</span>
+        </div>
+        <div class="bar-track">
+            <div class="bar-fill" style="width: {{ (medias.pontualidade / 5 * 100)|round }}%"></div>
+        </div>
+    </div>
+
+    <div class="bar-item">
+        <div class="bar-label">
+            <span>Domínio do Conteúdo</span>
+            <span>{{ "%.1f"|format(medias.dominio) }}/5.0</span>
+        </div>
+        <div class="bar-track">
+            <div class="bar-fill" style="width: {{ (medias.dominio / 5 * 100)|round }}%"></div>
+        </div>
+    </div>
+
+    <div class="bar-item">
+        <div class="bar-label">
+            <span>Relacionamento com Alunos</span>
+            <span>{{ "%.1f"|format(medias.relacionamento) }}/5.0</span>
+        </div>
+        <div class="bar-track">
+            <div class="bar-fill" style="width: {{ (medias.relacionamento / 5 * 100)|round }}%"></div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Comentários -->
+<div class="comments-section">
+    <h3>Comentários Recebidos</h3>
+
+    {% if avaliacoes %}
+        {% for av in avaliacoes %}
+        <div class="comment-card">
+            {% if av.pontos_positivos %}
+            <div class="comment-positivo">
+                <strong>✅ Pontos Positivos</strong>
+                <p>{{ av.pontos_positivos }}</p>
+            </div>
+            {% endif %}
+            {% if av.aspectos_melhorar %}
+            <div class="comment-melhorar">
+                <strong>💡 Aspectos a Melhorar</strong>
+                <p>{{ av.aspectos_melhorar }}</p>
+            </div>
+            {% endif %}
+            <div class="comment-date">
+                Disciplina: {{ av.disciplina }} &mdash; {{ av.data }}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-data">Nenhuma avaliação recebida ainda.</div>
+    {% endif %}
+</div>
+{% endblock %}

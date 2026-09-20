@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Avaliação Enviada{% endblock %}
+
+{% block content %}
+<div class="success-container">
+    <div class="icon-success">✅</div>
+    <h2>Avaliação Enviada!</h2>
+    <p>Obrigado pelo seu feedback. Sua avaliação foi registrada de forma anônima e ajudará a melhorar a qualidade do ensino.</p>
+    <a href="{{ url_for('avaliar') }}" class="btn btn-primary">Nova Avaliação</a>
+    <br><br>
+    <a href="{{ url_for('index') }}" class="btn btn-success">Voltar ao Início</a>
+</div>
+{% endblock %}
