@@ -12,7 +12,12 @@
             <h1><a href="{{ url_for('index') }}">📝 Feedback Estudantil</a></h1>
             <nav>
                 <a href="{{ url_for('index') }}">Início</a>
-                <a href="{{ url_for('avaliar') }}">Avaliar</a>
+                <a href="{{ url_for('avaliar') }}"
+                   data-loading="true"
+                   data-loading-title="Carregando Avaliação..."
+                   data-loading-text="Consultando professores e disciplinas no banco de dados. Por favor, aguarde..."
+                   data-loading-badge="🎓 Formulário de Avaliação"
+                   data-loading-icon="📝">Avaliar</a>
                 <a href="{{ url_for('login_professor') }}">Área do Professor</a>
                 <a href="{{ url_for('login_admin') }}" style="color: #f1c40f;">Administração</a>
             </nav>
@@ -36,6 +41,128 @@
         <p>Vitória da Conquista - BA | ODS 4: Educação de Qualidade</p>
     </footer>
 
+    <!-- Overlay de Carregamento para Operações no Banco de Dados -->
+    <div id="dbLoadingOverlay" class="db-loading-overlay" aria-hidden="true">
+        <div class="db-loading-modal" role="dialog" aria-modal="true" aria-labelledby="dbLoadingTitle">
+            <div class="db-loading-spinner" aria-hidden="true"></div>
+            <h3 class="db-loading-title" id="dbLoadingTitle">Processando...</h3>
+            <p class="db-loading-text" id="dbLoadingText">Salvando alterações no banco de dados. Por favor, aguarde...</p>
+            <div class="db-loading-badge" id="dbLoadingBadge">
+                <span id="dbLoadingBadgeIcon">💾</span> <span id="dbLoadingBadgeText">Operação no Banco de Dados</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('dbLoadingOverlay');
+            const titleEl = document.getElementById('dbLoadingTitle');
+            const textEl = document.getElementById('dbLoadingText');
+            const badgeTextEl = document.getElementById('dbLoadingBadgeText');
+            const badgeIconEl = document.getElementById('dbLoadingBadgeIcon');
+
+            function showLoadingOverlay(title, text, badgeText, badgeIcon) {
+                if (!overlay) return;
+                if (titleEl) titleEl.textContent = title || 'Processando...';
+                if (textEl) textEl.textContent = text || 'Salvando alterações no banco de dados. Por favor, aguarde...';
+                if (badgeTextEl) badgeTextEl.textContent = badgeText || 'Operação no Banco de Dados';
+                if (badgeIconEl) badgeIconEl.textContent = badgeIcon || '💾';
+                overlay.classList.add('active');
+                overlay.setAttribute('aria-hidden', 'false');
+            }
+
+            // 1. Captura todos os formulários com data-db-action="true"
+            const dbForms = document.querySelectorAll('form[data-db-action="true"]');
+
+            dbForms.forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    if (e.defaultPrevented) {
+                        return;
+                    }
+
+                    // Confirmação personalizada (ex: exclusão de professor)
+                    const confirmMessage = form.getAttribute('data-confirm');
+                    if (confirmMessage) {
+                        if (!window.confirm(confirmMessage)) {
+                            e.preventDefault();
+                            return;
+                        }
+                    }
+
+                    // Respeita validação nativa do HTML5 (required, type, etc)
+                    if (typeof form.checkValidity === 'function' && !form.checkValidity()) {
+                        return;
+                    }
+
+                    // Encontra o botão de submissão
+                    const submitBtn = form.querySelector('button[type="submit"]') || form.querySelector('input[type="submit"]');
+
+                    const customTitle = form.getAttribute('data-loading-title') || 'Processando...';
+                    const customText = form.getAttribute('data-loading-text') || 'Gravando dados no banco de dados. Por favor, aguarde...';
+                    const customBadge = form.getAttribute('data-loading-badge') || 'Operação no Banco de Dados';
+                    const customBadgeIcon = form.getAttribute('data-loading-icon') || '💾';
+                    const customBtnText = form.getAttribute('data-btn-text');
+
+                    if (submitBtn) {
+                        submitBtn.classList.add('is-loading');
+                        submitBtn.setAttribute('data-original-html', submitBtn.innerHTML);
+
+                        const isSmall = submitBtn.classList.contains('btn-sm') ||
+                                        (submitBtn.style && submitBtn.style.fontSize === '0.85rem') ||
+                                        submitBtn.offsetWidth < 90;
+                        const spinnerClass = isSmall ? 'btn-spinner btn-spinner-sm' : 'btn-spinner';
+                        const text = customBtnText || submitBtn.textContent.trim();
+                        submitBtn.innerHTML = '<span class="' + spinnerClass + '"></span>' + text;
+
+                        setTimeout(function() {
+                            submitBtn.disabled = true;
+                        }, 10);
+                    }
+
+                    // Exibe o overlay
+                    showLoadingOverlay(customTitle, customText, customBadge, customBadgeIcon);
+                });
+            });
+
+            // 2. Captura links/cards de navegação com data-loading="true" (ex: Sou Aluno)
+            const loadingLinks = document.querySelectorAll('a[data-loading="true"]');
+            loadingLinks.forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) {
+                        return;
+                    }
+
+                    const customTitle = link.getAttribute('data-loading-title') || 'Carregando...';
+                    const customText = link.getAttribute('data-loading-text') || 'Consultando informações no banco de dados. Por favor, aguarde...';
+                    const customBadge = link.getAttribute('data-loading-badge') || 'Acesso ao Sistema';
+                    const customBadgeIcon = link.getAttribute('data-loading-icon') || '🎓';
+
+                    link.classList.add('is-loading');
+                    link.style.pointerEvents = 'none';
+
+                    showLoadingOverlay(customTitle, customText, customBadge, customBadgeIcon);
+                });
+            });
+
+            // Restaura o estado normal caso a página venha do cache de navegação (botão voltar)
+            window.addEventListener('pageshow', function() {
+                if (overlay) {
+                    overlay.classList.remove('active');
+                    overlay.setAttribute('aria-hidden', 'true');
+                }
+                const loadingEls = document.querySelectorAll('.btn.is-loading, button.is-loading, a.is-loading');
+                loadingEls.forEach(function(el) {
+                    el.disabled = false;
+                    el.style.pointerEvents = '';
+                    el.classList.remove('is-loading');
+                    const orig = el.getAttribute('data-original-html');
+                    if (orig) el.innerHTML = orig;
+                });
+            });
+        });
+    </script>
+
     {% block scripts %}{% endblock %}
 </body>
 </html>
+

@@ -7,7 +7,11 @@
     <h2>Avaliar Professor</h2>
     <p class="subtitle">Sua avaliação é 100% anônima. Nenhuma informação pessoal será coletada.</p>
 
-    <form method="POST" action="{{ url_for('avaliar') }}" id="formAvaliar">
+    <form method="POST" action="{{ url_for('avaliar') }}" id="formAvaliar"
+          data-db-action="true"
+          data-loading-title="Enviando Avaliação..."
+          data-loading-text="Gravando sua avaliação de forma 100% anônima no banco de dados. Por favor, aguarde..."
+          data-btn-text="Enviando Avaliação...">
         <div class="form-group">
             <label for="professor">Professor(a)</label>
             <select name="professor_id" id="professor" required>

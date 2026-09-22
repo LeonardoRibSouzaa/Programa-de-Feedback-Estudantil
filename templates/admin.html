@@ -15,7 +15,11 @@
     <!-- Formulário de Cadastro Professor -->
     <div class="form-container" style="flex: 1; min-width: 300px; margin: 0;">
         <h3 style="color: #1a5276; margin-bottom: 1rem;">Cadastrar Novo Professor</h3>
-        <form method="POST" action="{{ url_for('admin') }}">
+        <form method="POST" action="{{ url_for('admin') }}"
+              data-db-action="true"
+              data-loading-title="Cadastrando Professor..."
+              data-loading-text="Salvando professor e vinculando disciplinas no banco de dados. Por favor, aguarde..."
+              data-btn-text="Salvando Professor...">
             <div class="form-group">
                 <label for="nome">Nome do Professor</label>
                 <input type="text" name="nome" id="nome" placeholder="Ex: Prof. Marcos" required>
@@ -60,7 +64,13 @@
                         | Matérias: {{ prof.disciplinas or 'Nenhuma' }}
                     </span>
                 </div>
-                <form method="POST" action="{{ url_for('excluir_professor', id=prof.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir o(a) {{ prof.nome }}? TODAS as avaliações recebidas por ele(a) também serão apagadas.');" style="margin: 0;">
+                <form method="POST" action="{{ url_for('excluir_professor', id=prof.id) }}"
+                      data-db-action="true"
+                      data-confirm="Tem certeza que deseja excluir o(a) {{ prof.nome }}? TODAS as avaliações recebidas por ele(a) também serão apagadas permanentemente do banco de dados."
+                      data-loading-title="Excluindo Professor..."
+                      data-loading-text="Removendo professor e avaliações do banco de dados. Por favor, aguarde..."
+                      data-btn-text="Excluindo..."
+                      style="margin: 0;">
                     <button type="submit" style="background: #e74c3c; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: bold;">Excluir</button>
                 </form>
             </div>
@@ -74,7 +84,11 @@
     <!-- Formulário Cadastro Disciplina -->
     <div class="form-container" style="flex: 1; min-width: 300px; margin: 0; background: #fdfbf7;">
         <h3 style="color: #d35400; margin-bottom: 1rem;">Cadastrar Nova Disciplina</h3>
-        <form method="POST" action="{{ url_for('adicionar_disciplina') }}">
+        <form method="POST" action="{{ url_for('adicionar_disciplina') }}"
+              data-db-action="true"
+              data-loading-title="Cadastrando Disciplina..."
+              data-loading-text="Gravando nova disciplina no banco de dados. Por favor, aguarde..."
+              data-btn-text="Adicionando...">
             <div class="form-group">
                 <label for="nome_disciplina">Nome da Disciplina</label>
                 <input type="text" name="nome" id="nome_disciplina" placeholder="Ex: Biologia" required>
@@ -102,7 +116,11 @@
 <div style="margin-top: 3rem;">
     <div class="form-container" style="max-width: 450px; border-top: 4px solid #8e44ad;">
         <h3 style="color: #8e44ad; margin-bottom: 1rem;">🔑 Alterar Senha de Administrador</h3>
-        <form method="POST" action="{{ url_for('alterar_senha_admin') }}">
+        <form method="POST" action="{{ url_for('alterar_senha_admin') }}"
+              data-db-action="true"
+              data-loading-title="Atualizando Senha..."
+              data-loading-text="Gravando nova senha no banco de dados com segurança. Por favor, aguarde..."
+              data-btn-text="Alterando Senha...">
             <div class="form-group">
                 <label for="senha_atual">Senha Atual</label>
                 <input type="password" name="senha_atual" id="senha_atual" placeholder="Digite a senha atual" required>

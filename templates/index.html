@@ -9,13 +9,23 @@
 </div>
 
 <div class="cards">
-    <a href="{{ url_for('avaliar') }}" class="card card-aluno">
+    <a href="{{ url_for('avaliar') }}" class="card card-aluno"
+       data-loading="true"
+       data-loading-title="Carregando Avaliação..."
+       data-loading-text="Consultando lista de professores e disciplinas no banco de dados. Por favor, aguarde..."
+       data-loading-badge="🎓 Área do Aluno"
+       data-loading-icon="📚">
         <div class="icon">🎓</div>
         <h3>Sou Aluno</h3>
         <p>Avalie seus professores de forma anônima, destacando pontos positivos e sugestões de melhoria.</p>
     </a>
 
-    <a href="{{ url_for('login_professor') }}" class="card card-professor">
+    <a href="{{ url_for('login_professor') }}" class="card card-professor"
+       data-loading="true"
+       data-loading-title="Acessando Área do Professor..."
+       data-loading-text="Carregando página de acesso do professor..."
+       data-loading-badge="👨‍🏫 Área do Professor"
+       data-loading-icon="🔑">
         <div class="icon">👨‍🏫</div>
         <h3>Sou Professor</h3>
         <p>Acesse seu painel para visualizar os feedbacks recebidos e acompanhar sua evolução.</p>

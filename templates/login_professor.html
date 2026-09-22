@@ -7,7 +7,13 @@
     <h2>Área do Professor</h2>
     <p class="subtitle">Acesse seu painel para visualizar os feedbacks recebidos.</p>
 
-    <form method="POST" action="{{ url_for('login_professor') }}">
+    <form method="POST" action="{{ url_for('login_professor') }}"
+          data-db-action="true"
+          data-loading-title="Verificando Código..."
+          data-loading-text="Consultando dados do professor e calculando feedbacks no banco de dados. Por favor, aguarde..."
+          data-loading-badge="👨‍🏫 Área do Professor"
+          data-loading-icon="🔑"
+          data-btn-text="Acessando Painel...">
         <div class="form-group">
             <label for="codigo_acesso">Código de Acesso</label>
             <input type="text" name="codigo_acesso" id="codigo_acesso"

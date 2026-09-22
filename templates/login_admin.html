@@ -7,7 +7,13 @@
     <h2>🔐 Área Restrita</h2>
     <p class="subtitle">Acesso exclusivo para a coordenação ou direção da instituição.</p>
 
-    <form method="POST" action="{{ url_for('login_admin') }}">
+    <form method="POST" action="{{ url_for('login_admin') }}"
+          data-db-action="true"
+          data-loading-title="Autenticando Administrador..."
+          data-loading-text="Validando credenciais de administrador no banco de dados. Por favor, aguarde..."
+          data-loading-badge="🔐 Administração"
+          data-loading-icon="🛡️"
+          data-btn-text="Entrando...">
         <div class="form-group">
             <label for="senha_admin">Senha do Administrador</label>
             <input type="password" name="senha_admin" id="senha_admin"

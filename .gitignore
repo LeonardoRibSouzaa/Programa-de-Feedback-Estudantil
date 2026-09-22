@@ -4,3 +4,4 @@ __pycache__/
 feedback.db
 .env
 *.log
+.idea
